@@ -4,7 +4,7 @@ import java.util.List;
 import com.ruoyi.system.domain.SysNotice;
 
 /**
- * 公告 数据层
+ * 通知公告表 数据层
  * 
  * @author ruoyi
  */
@@ -45,8 +45,16 @@ public interface SysNoticeMapper
     /**
      * 批量删除公告
      * 
-     * @param noticeIds 需要删除的数据ID
+     * @param noticeId 公告ID
      * @return 结果
      */
-    public int deleteNoticeByIds(String[] noticeIds);
+    public int deleteNoticeById(Long noticeId);
+
+    /**
+     * 批量删除公告信息
+     * 
+     * @param noticeIds 需要删除的公告ID
+     * @return 结果
+     */
+    public int deleteNoticeByIds(Long[] noticeIds);
 }

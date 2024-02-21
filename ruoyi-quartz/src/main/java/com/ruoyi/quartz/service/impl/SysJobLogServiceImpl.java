@@ -3,7 +3,6 @@ package com.ruoyi.quartz.service.impl;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.ruoyi.common.core.text.Convert;
 import com.ruoyi.quartz.domain.SysJobLog;
 import com.ruoyi.quartz.mapper.SysJobLogMapper;
 import com.ruoyi.quartz.service.ISysJobLogService;
@@ -57,13 +56,13 @@ public class SysJobLogServiceImpl implements ISysJobLogService
     /**
      * 批量删除调度日志信息
      * 
-     * @param ids 需要删除的数据ID
+     * @param logIds 需要删除的数据ID
      * @return 结果
      */
     @Override
-    public int deleteJobLogByIds(String ids)
+    public int deleteJobLogByIds(Long[] logIds)
     {
-        return jobLogMapper.deleteJobLogByIds(Convert.toStrArray(ids));
+        return jobLogMapper.deleteJobLogByIds(logIds);
     }
 
     /**

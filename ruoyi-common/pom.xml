@@ -5,7 +5,7 @@
     <parent>
         <artifactId>ruoyi</artifactId>
         <groupId>com.ruoyi</groupId>
-        <version>4.7.8</version>
+        <version>3.8.7</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -29,16 +29,10 @@
             <artifactId>spring-web</artifactId>
         </dependency>
 
-        <!--Shiro核心框架 -->
+        <!-- spring security 安全认证 -->
         <dependency>
-            <groupId>org.apache.shiro</groupId>
-            <artifactId>shiro-core</artifactId>
-        </dependency>
-        
-        <!-- Shiro使用EhCache缓存框架 -->
-        <dependency>
-            <groupId>org.apache.shiro</groupId>
-            <artifactId>shiro-ehcache</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
         <!-- pagehelper 分页插件 -->
@@ -58,17 +52,24 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
         </dependency>
-
+  
         <!-- JSON工具类 -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
         </dependency>
+        
+        <!-- 动态数据源 -->
+		<dependency>
+			<groupId>com.baomidou</groupId>
+			<artifactId>dynamic-datasource-spring-boot-starter</artifactId>
+			<version>3.5.2</version>
+		</dependency>
 
         <!-- 阿里JSON解析器 -->
         <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
+            <groupId>com.alibaba.fastjson2</groupId>
+            <artifactId>fastjson2</artifactId>
         </dependency>
 
         <!-- io常用工具类 -->
@@ -87,6 +88,36 @@
         <dependency>
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
+        </dependency>
+
+        <!-- Token生成与解析-->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+        </dependency>
+
+        <!-- Jaxb -->
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+        </dependency>
+
+        <!-- redis 缓存操作 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+
+        <!-- pool 对象池 -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-pool2</artifactId>
+        </dependency>
+
+        <!-- 解析客户端操作系统、浏览器等 -->
+        <dependency>
+            <groupId>eu.bitwalker</groupId>
+            <artifactId>UserAgentUtils</artifactId>
         </dependency>
 
         <!-- servlet包 -->

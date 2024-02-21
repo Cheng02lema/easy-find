@@ -1,6 +1,5 @@
 package com.ruoyi.system.service.impl;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -10,10 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.ruoyi.common.constant.UserConstants;
-import com.ruoyi.common.core.domain.Ztree;
 import com.ruoyi.common.core.domain.entity.SysDictData;
 import com.ruoyi.common.core.domain.entity.SysDictType;
-import com.ruoyi.common.core.text.Convert;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.DictUtils;
 import com.ruoyi.common.utils.StringUtils;
@@ -115,14 +112,13 @@ public class SysDictTypeServiceImpl implements ISysDictTypeService
     }
 
     /**
-     * 批量删除字典类型
+     * 批量删除字典类型信息
      * 
-     * @param ids 需要删除的数据
+     * @param dictIds 需要删除的字典ID
      */
     @Override
-    public void deleteDictTypeByIds(String ids)
+    public void deleteDictTypeByIds(Long[] dictIds)
     {
-        Long[] dictIds = Convert.toLongArray(ids);
         for (Long dictId : dictIds)
         {
             SysDictType dictType = selectDictTypeById(dictId);
@@ -223,38 +219,5 @@ public class SysDictTypeServiceImpl implements ISysDictTypeService
             return UserConstants.NOT_UNIQUE;
         }
         return UserConstants.UNIQUE;
-    }
-
-    /**
-     * 查询字典类型树
-     * 
-     * @param dictType 字典类型
-     * @return 所有字典类型
-     */
-    @Override
-    public List<Ztree> selectDictTree(SysDictType dictType)
-    {
-        List<Ztree> ztrees = new ArrayList<Ztree>();
-        List<SysDictType> dictList = dictTypeMapper.selectDictTypeList(dictType);
-        for (SysDictType dict : dictList)
-        {
-            if (UserConstants.DICT_NORMAL.equals(dict.getStatus()))
-            {
-                Ztree ztree = new Ztree();
-                ztree.setId(dict.getDictId());
-                ztree.setName(transDictName(dict));
-                ztree.setTitle(dict.getDictType());
-                ztrees.add(ztree);
-            }
-        }
-        return ztrees;
-    }
-
-    public String transDictName(SysDictType dictType)
-    {
-        StringBuffer sb = new StringBuffer();
-        sb.append("(" + dictType.getDictName() + ")");
-        sb.append("&nbsp;&nbsp;&nbsp;" + dictType.getDictType());
-        return sb.toString();
     }
 }

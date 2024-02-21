@@ -1,7 +1,7 @@
 package com.ruoyi.quartz.mapper;
 
-import com.ruoyi.quartz.domain.SysJob;
 import java.util.List;
+import com.ruoyi.quartz.domain.SysJob;
 
 /**
  * 调度任务信息 数据层

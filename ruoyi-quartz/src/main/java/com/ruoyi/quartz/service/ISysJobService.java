@@ -55,10 +55,10 @@ public interface ISysJobService
     /**
      * 批量删除调度信息
      * 
-     * @param ids 需要删除的数据ID
+     * @param jobIds 需要删除的任务ID
      * @return 结果
      */
-    public void deleteJobByIds(String ids) throws SchedulerException;
+    public void deleteJobByIds(Long[] jobIds) throws SchedulerException;
 
     /**
      * 任务调度状态修改

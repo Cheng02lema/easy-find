@@ -1,7 +1,7 @@
 package com.ruoyi.quartz.mapper;
 
-import com.ruoyi.quartz.domain.SysJobLog;
 import java.util.List;
+import com.ruoyi.quartz.domain.SysJobLog;
 
 /**
  * 调度任务日志信息 数据层
@@ -44,10 +44,10 @@ public interface SysJobLogMapper
     /**
      * 批量删除调度日志信息
      * 
-     * @param ids 需要删除的数据ID
+     * @param logIds 需要删除的数据ID
      * @return 结果
      */
-    public int deleteJobLogByIds(String[] ids);
+    public int deleteJobLogByIds(Long[] logIds);
 
     /**
      * 删除任务日志

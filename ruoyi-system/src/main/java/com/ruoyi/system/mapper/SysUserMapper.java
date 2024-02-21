@@ -1,6 +1,7 @@
 package com.ruoyi.system.mapper;
 
 import java.util.List;
+import org.apache.ibatis.annotations.Param;
 import com.ruoyi.common.core.domain.entity.SysUser;
 
 /**
@@ -40,23 +41,7 @@ public interface SysUserMapper
      * @param userName 用户名
      * @return 用户对象信息
      */
-    public SysUser selectUserByLoginName(String userName);
-
-    /**
-     * 通过手机号码查询用户
-     * 
-     * @param phoneNumber 手机号码
-     * @return 用户对象信息
-     */
-    public SysUser selectUserByPhoneNumber(String phoneNumber);
-
-    /**
-     * 通过邮箱查询用户
-     * 
-     * @param email 邮箱
-     * @return 用户对象信息
-     */
-    public SysUser selectUserByEmail(String email);
+    public SysUser selectUserByUserName(String userName);
 
     /**
      * 通过用户ID查询用户
@@ -65,6 +50,40 @@ public interface SysUserMapper
      * @return 用户对象信息
      */
     public SysUser selectUserById(Long userId);
+
+    /**
+     * 新增用户信息
+     * 
+     * @param user 用户信息
+     * @return 结果
+     */
+    public int insertUser(SysUser user);
+
+    /**
+     * 修改用户信息
+     * 
+     * @param user 用户信息
+     * @return 结果
+     */
+    public int updateUser(SysUser user);
+
+    /**
+     * 修改用户头像
+     * 
+     * @param userName 用户名
+     * @param avatar 头像地址
+     * @return 结果
+     */
+    public int updateUserAvatar(@Param("userName") String userName, @Param("avatar") String avatar);
+
+    /**
+     * 重置用户密码
+     * 
+     * @param userName 用户名
+     * @param password 密码
+     * @return 结果
+     */
+    public int resetUserPwd(@Param("userName") String userName, @Param("password") String password);
 
     /**
      * 通过用户ID删除用户
@@ -77,34 +96,18 @@ public interface SysUserMapper
     /**
      * 批量删除用户信息
      * 
-     * @param ids 需要删除的数据ID
+     * @param userIds 需要删除的用户ID
      * @return 结果
      */
-    public int deleteUserByIds(Long[] ids);
-
-    /**
-     * 修改用户信息
-     * 
-     * @param user 用户信息
-     * @return 结果
-     */
-    public int updateUser(SysUser user);
-
-    /**
-     * 新增用户信息
-     * 
-     * @param user 用户信息
-     * @return 结果
-     */
-    public int insertUser(SysUser user);
+    public int deleteUserByIds(Long[] userIds);
 
     /**
      * 校验用户名称是否唯一
      * 
-     * @param loginName 登录名称
+     * @param userName 用户名称
      * @return 结果
      */
-    public SysUser checkLoginNameUnique(String loginName);
+    public SysUser checkUserNameUnique(String userName);
 
     /**
      * 校验手机号码是否唯一

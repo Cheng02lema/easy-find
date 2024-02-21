@@ -3,7 +3,6 @@ package com.ruoyi.system.service.impl;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.ruoyi.common.core.text.Convert;
 import com.ruoyi.system.domain.SysOperLog;
 import com.ruoyi.system.mapper.SysOperLogMapper;
 import com.ruoyi.system.service.ISysOperLogService;
@@ -45,13 +44,13 @@ public class SysOperLogServiceImpl implements ISysOperLogService
     /**
      * 批量删除系统操作日志
      * 
-     * @param ids 需要删除的数据
-     * @return
+     * @param operIds 需要删除的操作日志ID
+     * @return 结果
      */
     @Override
-    public int deleteOperLogByIds(String ids)
+    public int deleteOperLogByIds(Long[] operIds)
     {
-        return operLogMapper.deleteOperLogByIds(Convert.toStrArray(ids));
+        return operLogMapper.deleteOperLogByIds(operIds);
     }
 
     /**

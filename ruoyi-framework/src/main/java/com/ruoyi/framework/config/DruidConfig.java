@@ -58,7 +58,7 @@ public class DruidConfig
         setDataSource(targetDataSources, DataSourceType.SLAVE.name(), "slaveDataSource");
         return new DynamicDataSource(masterDataSource, targetDataSources);
     }
-
+    
     /**
      * 设置数据源
      * 
@@ -99,7 +99,6 @@ public class DruidConfig
             public void init(javax.servlet.FilterConfig filterConfig) throws ServletException
             {
             }
-
             @Override
             public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
                     throws IOException, ServletException
@@ -114,7 +113,6 @@ public class DruidConfig
                 text = text.replaceAll("powered.*?shrek.wang</a>", "");
                 response.getWriter().write(text);
             }
-
             @Override
             public void destroy()
             {

@@ -1,16 +1,18 @@
 package com.ruoyi.web.controller.system;
 
 import java.util.List;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
+import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
@@ -25,76 +27,52 @@ import com.ruoyi.system.service.ISysPostService;
  * 
  * @author ruoyi
  */
-@Controller
+@RestController
 @RequestMapping("/system/post")
 public class SysPostController extends BaseController
 {
-    private String prefix = "system/post";
-
     @Autowired
     private ISysPostService postService;
 
-    @RequiresPermissions("system:post:view")
-    @GetMapping()
-    public String operlog()
-    {
-        return prefix + "/post";
-    }
-
-    @RequiresPermissions("system:post:list")
-    @PostMapping("/list")
-    @ResponseBody
+    /**
+     * 获取岗位列表
+     */
+    @PreAuthorize("@ss.hasPermi('system:post:list')")
+    @GetMapping("/list")
     public TableDataInfo list(SysPost post)
     {
         startPage();
         List<SysPost> list = postService.selectPostList(post);
         return getDataTable(list);
     }
-
+    
     @Log(title = "岗位管理", businessType = BusinessType.EXPORT)
-    @RequiresPermissions("system:post:export")
+    @PreAuthorize("@ss.hasPermi('system:post:export')")
     @PostMapping("/export")
-    @ResponseBody
-    public AjaxResult export(SysPost post)
+    public void export(HttpServletResponse response, SysPost post)
     {
         List<SysPost> list = postService.selectPostList(post);
         ExcelUtil<SysPost> util = new ExcelUtil<SysPost>(SysPost.class);
-        return util.exportExcel(list, "岗位数据");
+        util.exportExcel(response, list, "岗位数据");
     }
 
-    @RequiresPermissions("system:post:remove")
-    @Log(title = "岗位管理", businessType = BusinessType.DELETE)
-    @PostMapping("/remove")
-    @ResponseBody
-    public AjaxResult remove(String ids)
+    /**
+     * 根据岗位编号获取详细信息
+     */
+    @PreAuthorize("@ss.hasPermi('system:post:query')")
+    @GetMapping(value = "/{postId}")
+    public AjaxResult getInfo(@PathVariable Long postId)
     {
-        try
-        {
-            return toAjax(postService.deletePostByIds(ids));
-        }
-        catch (Exception e)
-        {
-            return error(e.getMessage());
-        }
+        return success(postService.selectPostById(postId));
     }
 
     /**
      * 新增岗位
      */
-    @GetMapping("/add")
-    public String add()
-    {
-        return prefix + "/add";
-    }
-
-    /**
-     * 新增保存岗位
-     */
-    @RequiresPermissions("system:post:add")
+    @PreAuthorize("@ss.hasPermi('system:post:add')")
     @Log(title = "岗位管理", businessType = BusinessType.INSERT)
-    @PostMapping("/add")
-    @ResponseBody
-    public AjaxResult addSave(@Validated SysPost post)
+    @PostMapping
+    public AjaxResult add(@Validated @RequestBody SysPost post)
     {
         if (!postService.checkPostNameUnique(post))
         {
@@ -104,29 +82,17 @@ public class SysPostController extends BaseController
         {
             return error("新增岗位'" + post.getPostName() + "'失败，岗位编码已存在");
         }
-        post.setCreateBy(getLoginName());
+        post.setCreateBy(getUsername());
         return toAjax(postService.insertPost(post));
     }
 
     /**
      * 修改岗位
      */
-    @RequiresPermissions("system:post:edit")
-    @GetMapping("/edit/{postId}")
-    public String edit(@PathVariable("postId") Long postId, ModelMap mmap)
-    {
-        mmap.put("post", postService.selectPostById(postId));
-        return prefix + "/edit";
-    }
-
-    /**
-     * 修改保存岗位
-     */
-    @RequiresPermissions("system:post:edit")
+    @PreAuthorize("@ss.hasPermi('system:post:edit')")
     @Log(title = "岗位管理", businessType = BusinessType.UPDATE)
-    @PostMapping("/edit")
-    @ResponseBody
-    public AjaxResult editSave(@Validated SysPost post)
+    @PutMapping
+    public AjaxResult edit(@Validated @RequestBody SysPost post)
     {
         if (!postService.checkPostNameUnique(post))
         {
@@ -136,27 +102,28 @@ public class SysPostController extends BaseController
         {
             return error("修改岗位'" + post.getPostName() + "'失败，岗位编码已存在");
         }
-        post.setUpdateBy(getLoginName());
+        post.setUpdateBy(getUsername());
         return toAjax(postService.updatePost(post));
     }
 
     /**
-     * 校验岗位名称
+     * 删除岗位
      */
-    @PostMapping("/checkPostNameUnique")
-    @ResponseBody
-    public boolean checkPostNameUnique(SysPost post)
+    @PreAuthorize("@ss.hasPermi('system:post:remove')")
+    @Log(title = "岗位管理", businessType = BusinessType.DELETE)
+    @DeleteMapping("/{postIds}")
+    public AjaxResult remove(@PathVariable Long[] postIds)
     {
-        return postService.checkPostNameUnique(post);
+        return toAjax(postService.deletePostByIds(postIds));
     }
 
     /**
-     * 校验岗位编码
+     * 获取岗位选择框列表
      */
-    @PostMapping("/checkPostCodeUnique")
-    @ResponseBody
-    public boolean checkPostCodeUnique(SysPost post)
+    @GetMapping("/optionselect")
+    public AjaxResult optionselect()
     {
-        return postService.checkPostCodeUnique(post);
+        List<SysPost> posts = postService.selectPostAll();
+        return success(posts);
     }
 }

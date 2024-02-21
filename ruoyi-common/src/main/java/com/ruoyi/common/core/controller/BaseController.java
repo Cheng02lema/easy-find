@@ -3,25 +3,21 @@ package com.ruoyi.common.core.controller;
 import java.beans.PropertyEditorSupport;
 import java.util.Date;
 import java.util.List;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.ruoyi.common.constant.HttpStatus;
 import com.ruoyi.common.core.domain.AjaxResult;
-import com.ruoyi.common.core.domain.AjaxResult.Type;
-import com.ruoyi.common.core.domain.entity.SysUser;
+import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.core.page.PageDomain;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.core.page.TableSupport;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.PageUtils;
-import com.ruoyi.common.utils.ServletUtils;
-import com.ruoyi.common.utils.ShiroUtils;
+import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.sql.SqlUtil;
 
@@ -81,62 +77,17 @@ public class BaseController
     }
 
     /**
-     * 获取request
-     */
-    public HttpServletRequest getRequest()
-    {
-        return ServletUtils.getRequest();
-    }
-
-    /**
-     * 获取response
-     */
-    public HttpServletResponse getResponse()
-    {
-        return ServletUtils.getResponse();
-    }
-
-    /**
-     * 获取session
-     */
-    public HttpSession getSession()
-    {
-        return getRequest().getSession();
-    }
-
-    /**
      * 响应请求分页数据
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
     protected TableDataInfo getDataTable(List<?> list)
     {
         TableDataInfo rspData = new TableDataInfo();
-        rspData.setCode(0);
+        rspData.setCode(HttpStatus.SUCCESS);
+        rspData.setMsg("查询成功");
         rspData.setRows(list);
         rspData.setTotal(new PageInfo(list).getTotal());
         return rspData;
-    }
-
-    /**
-     * 响应返回结果
-     * 
-     * @param rows 影响行数
-     * @return 操作结果
-     */
-    protected AjaxResult toAjax(int rows)
-    {
-        return rows > 0 ? success() : error();
-    }
-
-    /**
-     * 响应返回结果
-     * 
-     * @param result 结果
-     * @return 操作结果
-     */
-    protected AjaxResult toAjax(boolean result)
-    {
-        return result ? success() : error();
     }
 
     /**
@@ -162,13 +113,13 @@ public class BaseController
     {
         return AjaxResult.success(message);
     }
-
+    
     /**
-     * 返回成功数据
+     * 返回成功消息
      */
-    public static AjaxResult success(Object data)
+    public AjaxResult success(Object data)
     {
-        return AjaxResult.success("操作成功", data);
+        return AjaxResult.success(data);
     }
 
     /**
@@ -180,11 +131,33 @@ public class BaseController
     }
 
     /**
-     * 返回错误码消息
+     * 返回警告消息
      */
-    public AjaxResult error(Type type, String message)
+    public AjaxResult warn(String message)
     {
-        return new AjaxResult(type, message);
+        return AjaxResult.warn(message);
+    }
+
+    /**
+     * 响应返回结果
+     * 
+     * @param rows 影响行数
+     * @return 操作结果
+     */
+    protected AjaxResult toAjax(int rows)
+    {
+        return rows > 0 ? AjaxResult.success() : AjaxResult.error();
+    }
+
+    /**
+     * 响应返回结果
+     * 
+     * @param result 结果
+     * @return 操作结果
+     */
+    protected AjaxResult toAjax(boolean result)
+    {
+        return result ? success() : error();
     }
 
     /**
@@ -198,17 +171,9 @@ public class BaseController
     /**
      * 获取用户缓存信息
      */
-    public SysUser getSysUser()
+    public LoginUser getLoginUser()
     {
-        return ShiroUtils.getSysUser();
-    }
-
-    /**
-     * 设置用户缓存信息
-     */
-    public void setSysUser(SysUser user)
-    {
-        ShiroUtils.setSysUser(user);
+        return SecurityUtils.getLoginUser();
     }
 
     /**
@@ -216,14 +181,22 @@ public class BaseController
      */
     public Long getUserId()
     {
-        return getSysUser().getUserId();
+        return getLoginUser().getUserId();
+    }
+
+    /**
+     * 获取登录部门id
+     */
+    public Long getDeptId()
+    {
+        return getLoginUser().getDeptId();
     }
 
     /**
      * 获取登录用户名
      */
-    public String getLoginName()
+    public String getUsername()
     {
-        return getSysUser().getLoginName();
+        return getLoginUser().getUsername();
     }
 }

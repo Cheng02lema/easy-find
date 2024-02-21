@@ -46,8 +46,8 @@ public class SysJobLog extends BaseEntity
     /** 开始时间 */
     private Date startTime;
 
-    /** 结束时间 */
-    private Date endTime;
+    /** 停止时间 */
+    private Date stopTime;
 
     public Long getJobLogId()
     {
@@ -128,15 +128,15 @@ public class SysJobLog extends BaseEntity
     {
         this.startTime = startTime;
     }
-
-    public Date getEndTime()
+    
+    public Date getStopTime()
     {
-        return endTime;
+        return stopTime;
     }
 
-    public void setEndTime(Date endTime)
+    public void setStopTime(Date stopTime)
     {
-        this.endTime = endTime;
+        this.stopTime = stopTime;
     }
 
     @Override
@@ -149,7 +149,7 @@ public class SysJobLog extends BaseEntity
             .append("status", getStatus())
             .append("exceptionInfo", getExceptionInfo())
             .append("startTime", getStartTime())
-            .append("endTime", getEndTime())
+            .append("stopTime", getStopTime())
             .toString();
     }
 }

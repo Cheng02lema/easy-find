@@ -1,7 +1,9 @@
 package com.ruoyi.common.core.domain.entity;
 
 import java.util.Set;
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
@@ -30,12 +32,18 @@ public class SysRole extends BaseEntity
     private String roleKey;
 
     /** 角色排序 */
-    @Excel(name = "角色排序", cellType = ColumnType.NUMERIC)
-    private String roleSort;
+    @Excel(name = "角色排序")
+    private Integer roleSort;
 
     /** 数据范围（1：所有数据权限；2：自定义数据权限；3：本部门数据权限；4：本部门及以下数据权限；5：仅本人数据权限） */
     @Excel(name = "数据范围", readConverterExp = "1=所有数据权限,2=自定义数据权限,3=本部门数据权限,4=本部门及以下数据权限,5=仅本人数据权限")
     private String dataScope;
+
+    /** 菜单树选择项是否关联显示（ 0：父子不互相关联显示 1：父子互相关联显示） */
+    private boolean menuCheckStrictly;
+
+    /** 部门树选择项是否关联显示（0：父子不互相关联显示 1：父子互相关联显示 ） */
+    private boolean deptCheckStrictly;
 
     /** 角色状态（0正常 1停用） */
     @Excel(name = "角色状态", readConverterExp = "0=正常,1=停用")
@@ -86,16 +94,6 @@ public class SysRole extends BaseEntity
         return roleId != null && 1L == roleId;
     }
 
-    public String getDataScope()
-    {
-        return dataScope;
-    }
-
-    public void setDataScope(String dataScope)
-    {
-        this.dataScope = dataScope;
-    }
-
     @NotBlank(message = "角色名称不能为空")
     @Size(min = 0, max = 30, message = "角色名称长度不能超过30个字符")
     public String getRoleName()
@@ -120,20 +118,55 @@ public class SysRole extends BaseEntity
         this.roleKey = roleKey;
     }
 
-    @NotBlank(message = "显示顺序不能为空")
-    public String getRoleSort()
+    @NotNull(message = "显示顺序不能为空")
+    public Integer getRoleSort()
     {
         return roleSort;
     }
 
-    public void setRoleSort(String roleSort)
+    public void setRoleSort(Integer roleSort)
     {
         this.roleSort = roleSort;
+    }
+
+    public String getDataScope()
+    {
+        return dataScope;
+    }
+
+    public void setDataScope(String dataScope)
+    {
+        this.dataScope = dataScope;
+    }
+
+    public boolean isMenuCheckStrictly()
+    {
+        return menuCheckStrictly;
+    }
+
+    public void setMenuCheckStrictly(boolean menuCheckStrictly)
+    {
+        this.menuCheckStrictly = menuCheckStrictly;
+    }
+
+    public boolean isDeptCheckStrictly()
+    {
+        return deptCheckStrictly;
+    }
+
+    public void setDeptCheckStrictly(boolean deptCheckStrictly)
+    {
+        this.deptCheckStrictly = deptCheckStrictly;
     }
 
     public String getStatus()
     {
         return status;
+    }
+
+    public void setStatus(String status)
+    {
+        this.status = status;
     }
 
     public String getDelFlag()
@@ -144,11 +177,6 @@ public class SysRole extends BaseEntity
     public void setDelFlag(String delFlag)
     {
         this.delFlag = delFlag;
-    }
-
-    public void setStatus(String status)
-    {
-        this.status = status;
     }
 
     public boolean isFlag()
@@ -199,6 +227,8 @@ public class SysRole extends BaseEntity
             .append("roleKey", getRoleKey())
             .append("roleSort", getRoleSort())
             .append("dataScope", getDataScope())
+            .append("menuCheckStrictly", isMenuCheckStrictly())
+            .append("deptCheckStrictly", isDeptCheckStrictly())
             .append("status", getStatus())
             .append("delFlag", getDelFlag())
             .append("createBy", getCreateBy())

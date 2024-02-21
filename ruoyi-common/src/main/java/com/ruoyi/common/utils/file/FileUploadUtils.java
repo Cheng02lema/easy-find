@@ -17,7 +17,7 @@ import com.ruoyi.common.utils.uuid.Seq;
 
 /**
  * 文件上传工具类
- * 
+ *
  * @author ruoyi
  */
 public class FileUploadUtils
@@ -102,8 +102,8 @@ public class FileUploadUtils
             throws FileSizeLimitExceededException, IOException, FileNameLengthLimitExceededException,
             InvalidExtensionException
     {
-        int fileNameLength = Objects.requireNonNull(file.getOriginalFilename()).length();
-        if (fileNameLength > FileUploadUtils.DEFAULT_FILE_NAME_LENGTH)
+        int fileNamelength = Objects.requireNonNull(file.getOriginalFilename()).length();
+        if (fileNamelength > FileUploadUtils.DEFAULT_FILE_NAME_LENGTH)
         {
             throw new FileNameLengthLimitExceededException(FileUploadUtils.DEFAULT_FILE_NAME_LENGTH);
         }
@@ -216,7 +216,7 @@ public class FileUploadUtils
 
     /**
      * 获取文件名的后缀
-     * 
+     *
      * @param file 表单文件
      * @return 后缀名
      */

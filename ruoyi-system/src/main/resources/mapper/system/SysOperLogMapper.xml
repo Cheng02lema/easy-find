@@ -65,9 +65,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 				AND oper_time &lt;= #{params.endTime}
 			</if>
 		</where>
+		order by oper_id desc
 	</select>
 	
-	<delete id="deleteOperLogByIds" parameterType="String">
+	<delete id="deleteOperLogByIds" parameterType="Long">
  		delete from sys_oper_log where oper_id in
  		<foreach collection="array" item="operId" open="(" separator="," close=")">
  			#{operId}

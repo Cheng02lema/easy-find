@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 import com.ruoyi.common.utils.Arith;
-import com.ruoyi.common.utils.IpUtils;
+import com.ruoyi.common.utils.ip.IpUtils;
 import com.ruoyi.framework.web.domain.server.Cpu;
 import com.ruoyi.framework.web.domain.server.Jvm;
 import com.ruoyi.framework.web.domain.server.Mem;
@@ -28,7 +28,6 @@ import oshi.util.Util;
  */
 public class Server
 {
-    
     private static final int OSHI_WAIT_SECOND = 1000;
     
     /**

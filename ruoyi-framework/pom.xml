@@ -5,7 +5,7 @@
     <parent>
         <artifactId>ruoyi</artifactId>
         <groupId>com.ruoyi</groupId>
-        <version>4.7.8</version>
+        <version>3.8.7</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -18,7 +18,7 @@
     <dependencies>
 
         <!-- SpringBoot Web容器 -->
-        <dependency>
+         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
@@ -41,28 +41,10 @@
             <artifactId>kaptcha</artifactId>
             <exclusions>
                 <exclusion>
-                    <artifactId>javax.servlet-api</artifactId>
+                    <artifactId>servlet-api</artifactId>
                     <groupId>javax.servlet</groupId>
                 </exclusion>
             </exclusions>
-        </dependency>
-
-        <!-- Shiro使用Spring框架 -->
-        <dependency>
-            <groupId>org.apache.shiro</groupId>
-            <artifactId>shiro-spring</artifactId>
-        </dependency>
-
-        <!-- thymeleaf模板引擎和shiro框架的整合 -->
-        <dependency>
-            <groupId>com.github.theborakompanioni</groupId>
-            <artifactId>thymeleaf-extras-shiro</artifactId>
-        </dependency>
-
-        <!-- 解析客户端操作系统、浏览器等 -->
-        <dependency>
-            <groupId>eu.bitwalker</groupId>
-            <artifactId>UserAgentUtils</artifactId>
         </dependency>
 
         <!-- 获取系统信息 -->

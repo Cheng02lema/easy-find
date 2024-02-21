@@ -1,6 +1,7 @@
 package com.ruoyi.common.core.domain.entity;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
@@ -38,7 +39,6 @@ public class SysDictData extends BaseEntity
     private String dictType;
 
     /** 样式属性（其他样式扩展） */
-    @Excel(name = "字典样式")
     private String cssClass;
 
     /** 表格字典样式 */
@@ -153,7 +153,7 @@ public class SysDictData extends BaseEntity
     {
         this.status = status;
     }
-
+    
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)

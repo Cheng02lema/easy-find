@@ -2,15 +2,22 @@ package com.ruoyi.framework.interceptor.impl;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import com.alibaba.fastjson2.JSON;
 import com.ruoyi.common.annotation.RepeatSubmit;
-import com.ruoyi.common.json.JSON;
+import com.ruoyi.common.constant.CacheConstants;
+import com.ruoyi.common.core.redis.RedisCache;
+import com.ruoyi.common.filter.RepeatedlyRequestWrapper;
+import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.common.utils.http.HttpHelper;
 import com.ruoyi.framework.interceptor.RepeatSubmitInterceptor;
 
 /**
- * 判断请求url和数据是否和上一次相同， 
+ * 判断请求url和数据是否和上一次相同，
  * 如果和上次相同，则是重复提交表单。 有效时间为10秒内。
  * 
  * @author ruoyi
@@ -22,23 +29,43 @@ public class SameUrlDataInterceptor extends RepeatSubmitInterceptor
 
     public final String REPEAT_TIME = "repeatTime";
 
-    public final String SESSION_REPEAT_KEY = "repeatData";
+    // 令牌自定义标识
+    @Value("${token.header}")
+    private String header;
+
+    @Autowired
+    private RedisCache redisCache;
 
     @SuppressWarnings("unchecked")
     @Override
-    public boolean isRepeatSubmit(HttpServletRequest request, RepeatSubmit annotation) throws Exception
+    public boolean isRepeatSubmit(HttpServletRequest request, RepeatSubmit annotation)
     {
-        // 本次参数及系统时间
-        String nowParams = JSON.marshal(request.getParameterMap());
+        String nowParams = "";
+        if (request instanceof RepeatedlyRequestWrapper)
+        {
+            RepeatedlyRequestWrapper repeatedlyRequest = (RepeatedlyRequestWrapper) request;
+            nowParams = HttpHelper.getBodyString(repeatedlyRequest);
+        }
+
+        // body参数为空，获取Parameter的数据
+        if (StringUtils.isEmpty(nowParams))
+        {
+            nowParams = JSON.toJSONString(request.getParameterMap());
+        }
         Map<String, Object> nowDataMap = new HashMap<String, Object>();
         nowDataMap.put(REPEAT_PARAMS, nowParams);
         nowDataMap.put(REPEAT_TIME, System.currentTimeMillis());
 
-        // 请求地址（作为存放session的key值）
+        // 请求地址（作为存放cache的key值）
         String url = request.getRequestURI();
 
-        HttpSession session = request.getSession();
-        Object sessionObj = session.getAttribute(SESSION_REPEAT_KEY);
+        // 唯一值（没有消息头则使用请求地址）
+        String submitKey = StringUtils.trimToEmpty(request.getHeader(header));
+
+        // 唯一标识（指定key + url + 消息头）
+        String cacheRepeatKey = CacheConstants.REPEAT_SUBMIT_KEY + url + submitKey;
+
+        Object sessionObj = redisCache.getCacheObject(cacheRepeatKey);
         if (sessionObj != null)
         {
             Map<String, Object> sessionMap = (Map<String, Object>) sessionObj;
@@ -51,9 +78,9 @@ public class SameUrlDataInterceptor extends RepeatSubmitInterceptor
                 }
             }
         }
-        Map<String, Object> sessionMap = new HashMap<String, Object>();
-        sessionMap.put(url, nowDataMap);
-        session.setAttribute(SESSION_REPEAT_KEY, sessionMap);
+        Map<String, Object> cacheMap = new HashMap<String, Object>();
+        cacheMap.put(url, nowDataMap);
+        redisCache.setCacheObject(cacheRepeatKey, cacheMap, annotation.interval(), TimeUnit.MILLISECONDS);
         return false;
     }
 

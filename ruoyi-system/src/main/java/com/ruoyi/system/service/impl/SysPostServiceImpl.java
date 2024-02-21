@@ -4,7 +4,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.common.constant.UserConstants;
-import com.ruoyi.common.core.text.Convert;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.SysPost;
@@ -50,31 +49,6 @@ public class SysPostServiceImpl implements ISysPostService
     }
 
     /**
-     * 根据用户ID查询岗位
-     * 
-     * @param userId 用户ID
-     * @return 岗位列表
-     */
-    @Override
-    public List<SysPost> selectPostsByUserId(Long userId)
-    {
-        List<SysPost> userPosts = postMapper.selectPostsByUserId(userId);
-        List<SysPost> posts = postMapper.selectPostAll();
-        for (SysPost post : posts)
-        {
-            for (SysPost userRole : userPosts)
-            {
-                if (post.getPostId().longValue() == userRole.getPostId().longValue())
-                {
-                    post.setFlag(true);
-                    break;
-                }
-            }
-        }
-        return posts;
-    }
-
-    /**
      * 通过岗位ID查询岗位信息
      * 
      * @param postId 岗位ID
@@ -87,60 +61,15 @@ public class SysPostServiceImpl implements ISysPostService
     }
 
     /**
-     * 批量删除岗位信息
+     * 根据用户ID获取岗位选择框列表
      * 
-     * @param ids 需要删除的数据ID
-     * @return 结果
+     * @param userId 用户ID
+     * @return 选中岗位ID列表
      */
     @Override
-    public int deletePostByIds(String ids)
+    public List<Long> selectPostListByUserId(Long userId)
     {
-        Long[] postIds = Convert.toLongArray(ids);
-        for (Long postId : postIds)
-        {
-            SysPost post = selectPostById(postId);
-            if (countUserPostById(postId) > 0)
-            {
-                throw new ServiceException(String.format("%1$s已分配,不能删除", post.getPostName()));
-            }
-        }
-        return postMapper.deletePostByIds(postIds);
-    }
-
-    /**
-     * 新增保存岗位信息
-     * 
-     * @param post 岗位信息
-     * @return 结果
-     */
-    @Override
-    public int insertPost(SysPost post)
-    {
-        return postMapper.insertPost(post);
-    }
-
-    /**
-     * 修改保存岗位信息
-     * 
-     * @param post 岗位信息
-     * @return 结果
-     */
-    @Override
-    public int updatePost(SysPost post)
-    {
-        return postMapper.updatePost(post);
-    }
-
-    /**
-     * 通过岗位ID查询岗位使用数量
-     * 
-     * @param postId 岗位ID
-     * @return 结果
-     */
-    @Override
-    public int countUserPostById(Long postId)
-    {
-        return userPostMapper.countUserPostById(postId);
+        return postMapper.selectPostListByUserId(userId);
     }
 
     /**
@@ -177,5 +106,73 @@ public class SysPostServiceImpl implements ISysPostService
             return UserConstants.NOT_UNIQUE;
         }
         return UserConstants.UNIQUE;
+    }
+
+    /**
+     * 通过岗位ID查询岗位使用数量
+     * 
+     * @param postId 岗位ID
+     * @return 结果
+     */
+    @Override
+    public int countUserPostById(Long postId)
+    {
+        return userPostMapper.countUserPostById(postId);
+    }
+
+    /**
+     * 删除岗位信息
+     * 
+     * @param postId 岗位ID
+     * @return 结果
+     */
+    @Override
+    public int deletePostById(Long postId)
+    {
+        return postMapper.deletePostById(postId);
+    }
+
+    /**
+     * 批量删除岗位信息
+     * 
+     * @param postIds 需要删除的岗位ID
+     * @return 结果
+     */
+    @Override
+    public int deletePostByIds(Long[] postIds)
+    {
+        for (Long postId : postIds)
+        {
+            SysPost post = selectPostById(postId);
+            if (countUserPostById(postId) > 0)
+            {
+                throw new ServiceException(String.format("%1$s已分配,不能删除", post.getPostName()));
+            }
+        }
+        return postMapper.deletePostByIds(postIds);
+    }
+
+    /**
+     * 新增保存岗位信息
+     * 
+     * @param post 岗位信息
+     * @return 结果
+     */
+    @Override
+    public int insertPost(SysPost post)
+    {
+        return postMapper.insertPost(post);
+    }
+
+    /**
+     * 修改保存岗位信息
+     * 
+     * @param post 岗位信息
+     * @return 结果
+     */
+    @Override
+    public int updatePost(SysPost post)
+    {
+        return postMapper.updatePost(post);
     }
 }
